@@ -1,6 +1,7 @@
 #pragma once
 #include <ctype.h>
 #include <string>
+#include <msclr\marshal_cppstd.h>
 
 struct entryHolder
 {
@@ -306,6 +307,7 @@ namespace Glucose_QuickLogs {
 			this->button1->TabIndex = 2;
 			this->button1->Text = L"Add Entry to Logbook";
 			this->button1->UseVisualStyleBackColor = true;
+			this->button1->Click += gcnew System::EventHandler(this, &MyForm1::button1_Click);
 			// 
 			// tabPage2
 			// 
@@ -530,6 +532,43 @@ private: System::Void medUText_KeyPress(System::Object^  sender, System::Windows
 	{
 		e->Handled = true;
 	}
+}
+private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+	entryHolder press;
+	press.month = datePick->Value.Month;
+	press.day = datePick->Value.Day;
+	press.month = datePick->Value.Month;
+	press.hour = timePick->Value.Hour;
+	press.minute = timePick->Value.Minute;
+	/*press.ampm = timePick->Value. not sure on how to retrieve ampm*/
+	
+	if (resultBox->Text == "")
+	{
+		MessageBox::Show("Result Box cannot be left empty!");
+	}
+	else
+	{
+		press.result = int::Parse(resultBox->Text);
+		press.dens = densityPick->SelectedIndex;
+		press.cat = timeCatPick->SelectedIndex;
+
+
+		//if programming for medication checkbox
+		if (medCheck->Checked == true)
+		{
+			press.medU = Convert::ToInt32(medUText->Text);
+			press.medicine = medPicker->SelectedIndex;
+		}
+
+		// if progamming for memo
+		if (memoCheck->Checked == true)
+		{
+			String^ memoHolder;
+			memoHolder = gcnew String(memoTextbox->Text);
+			press.memo = msclr::interop::marshal_as<std::string>(memoHolder);
+		}
+	}
+
 }
 };
 }
