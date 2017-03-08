@@ -805,10 +805,10 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 	entryHolder press;
 	press.month = datePick->Value.Month;
 	press.day = datePick->Value.Day;
-	press.month = datePick->Value.Month;
+	press.year = datePick->Value.Year;
 	press.hour = timePick->Value.Hour;
 	press.minute = timePick->Value.Minute;
-	/*press.ampm = timePick->Value. not sure on how to retrieve ampm*/
+	/*press.ampm = timePick->Value. no need!*/
 	
 	if (resultBox->Text == "")
 	{
@@ -820,12 +820,32 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 		press.dens = densityPick->SelectedIndex;
 		press.cat = timeCatPick->SelectedIndex;
 
+		std::ofstream entry;
+		entry.open("logbook.dat", std::ios::app);
+
+		entry << press.month << "\n" << press.day << "\n" << press.year << "\n";
+
+		if (press.hour >= 12)
+		{
+			entry << press.hour - 12 << "\n" << press.minute << "\n" << 1 << "\n";
+		}
+		else
+		{
+			entry << press.hour << "\n" << press.minute << "\n" << 0 << "\n";
+		}
+
+		entry << press.result << "\n" << press.dens << "\n" << press.cat << "\n";
 
 		//if programming for medication checkbox
 		if (medCheck->Checked == true)
 		{
 			press.medU = Convert::ToInt32(medUText->Text);
 			press.medicine = medPicker->SelectedIndex;
+			entry << press.medU << "\n" << press.medicine << "\n";
+		}
+		else
+		{
+			entry << "-\n-\n";
 		}
 
 		// if progamming for memo
@@ -834,7 +854,15 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 			String^ memoHolder;
 			memoHolder = gcnew String(memoTextbox->Text);
 			press.memo = msclr::interop::marshal_as<std::string>(memoHolder);
+			entry << press.memo << "\n\n";
+
 		}
+		else
+		{
+			entry << "-\n\n";
+		}
+
+		entry.close();
 	}
 
 }
