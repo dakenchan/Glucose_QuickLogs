@@ -3,7 +3,8 @@
 #include <string>
 #include <msclr\marshal_cppstd.h>
 #include <iostream>
-
+#include <fstream>
+#include <sstream>
 
 struct entryHolder
 {
@@ -23,7 +24,7 @@ struct entryHolder
 
 struct settingsHolder
 {
-	int density, low, normal, high, time, date;
+	int density, time, date, low, normal, high;
 	bool useColors;
 };
 
@@ -108,8 +109,9 @@ namespace Glucose_QuickLogs {
 	private: System::Windows::Forms::Label^  label2;
 	private: System::Windows::Forms::Label^  label1;
 	private: System::Windows::Forms::ComboBox^  densitySetting;
+	private: System::Windows::Forms::Button^  setApply;
 
-	private: System::Windows::Forms::Button^  button2;
+
 	private: System::Windows::Forms::Label^  label8;
 	private: System::Windows::Forms::Label^  label7;
 	private: System::Windows::Forms::CheckBox^  useRange;
@@ -156,7 +158,7 @@ namespace Glucose_QuickLogs {
 			this->Memo = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->tabPage3 = (gcnew System::Windows::Forms::TabPage());
 			this->groupBox3 = (gcnew System::Windows::Forms::GroupBox());
-			this->button2 = (gcnew System::Windows::Forms::Button());
+			this->setApply = (gcnew System::Windows::Forms::Button());
 			this->label8 = (gcnew System::Windows::Forms::Label());
 			this->label7 = (gcnew System::Windows::Forms::Label());
 			this->useRange = (gcnew System::Windows::Forms::CheckBox());
@@ -376,6 +378,8 @@ namespace Glucose_QuickLogs {
 			});
 			this->dataGridView1->Location = System::Drawing::Point(7, 7);
 			this->dataGridView1->Name = L"dataGridView1";
+			this->dataGridView1->ReadOnly = true;
+			this->dataGridView1->ShowEditingIcon = false;
 			this->dataGridView1->Size = System::Drawing::Size(708, 164);
 			this->dataGridView1->TabIndex = 0;
 			this->dataGridView1->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MyForm1::dataGridView1_CellContentClick);
@@ -384,48 +388,56 @@ namespace Glucose_QuickLogs {
 			// 
 			this->Date->HeaderText = L"Date";
 			this->Date->Name = L"Date";
+			this->Date->ReadOnly = true;
 			this->Date->Width = 60;
 			// 
 			// Time
 			// 
 			this->Time->HeaderText = L"Time";
 			this->Time->Name = L"Time";
+			this->Time->ReadOnly = true;
 			this->Time->Width = 60;
 			// 
 			// Category
 			// 
 			this->Category->HeaderText = L"Category";
 			this->Category->Name = L"Category";
+			this->Category->ReadOnly = true;
 			this->Category->Width = 70;
 			// 
 			// Result
 			// 
 			this->Result->HeaderText = L"Result";
 			this->Result->Name = L"Result";
+			this->Result->ReadOnly = true;
 			this->Result->Width = 50;
 			// 
 			// Density
 			// 
 			this->Density->HeaderText = L"Density";
 			this->Density->Name = L"Density";
+			this->Density->ReadOnly = true;
 			this->Density->Width = 50;
 			// 
 			// Medication
 			// 
 			this->Medication->HeaderText = L"Medication";
 			this->Medication->Name = L"Medication";
+			this->Medication->ReadOnly = true;
 			this->Medication->Width = 80;
 			// 
 			// Dose
 			// 
 			this->Dose->HeaderText = L"Dose";
 			this->Dose->Name = L"Dose";
+			this->Dose->ReadOnly = true;
 			this->Dose->Width = 45;
 			// 
 			// Memo
 			// 
 			this->Memo->HeaderText = L"Memo";
 			this->Memo->Name = L"Memo";
+			this->Memo->ReadOnly = true;
 			this->Memo->Width = 250;
 			// 
 			// tabPage3
@@ -441,7 +453,7 @@ namespace Glucose_QuickLogs {
 			// 
 			// groupBox3
 			// 
-			this->groupBox3->Controls->Add(this->button2);
+			this->groupBox3->Controls->Add(this->setApply);
 			this->groupBox3->Controls->Add(this->label8);
 			this->groupBox3->Controls->Add(this->label7);
 			this->groupBox3->Controls->Add(this->useRange);
@@ -464,14 +476,15 @@ namespace Glucose_QuickLogs {
 			this->groupBox3->TabStop = false;
 			this->groupBox3->Text = L"Defaults";
 			// 
-			// button2
+			// setApply
 			// 
-			this->button2->Location = System::Drawing::Point(9, 127);
-			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(263, 23);
-			this->button2->TabIndex = 1;
-			this->button2->Text = L"Apply Settings";
-			this->button2->UseVisualStyleBackColor = true;
+			this->setApply->Location = System::Drawing::Point(9, 127);
+			this->setApply->Name = L"setApply";
+			this->setApply->Size = System::Drawing::Size(263, 23);
+			this->setApply->TabIndex = 1;
+			this->setApply->Text = L"Apply Settings";
+			this->setApply->UseVisualStyleBackColor = true;
+			this->setApply->Click += gcnew System::EventHandler(this, &MyForm1::setApply_Click);
 			// 
 			// label8
 			// 
@@ -664,6 +677,30 @@ namespace Glucose_QuickLogs {
 		dateFormat->SelectedIndex = 0;
 		densitySetting->SelectedIndex = 0;
 
+		std::string temp;
+		std::ifstream importFileWork;
+
+		importFileWork.open("settings.dat");
+
+
+		settingsHolder import;
+
+		// time for some filework!
+		// grabbing density from settings.
+
+		importFileWork >> import.density >> import.low >> import.normal >> import.high >> import.time >> import.date >> import.useColors;
+
+		this->densitySetting->SelectedIndex = import.density;
+		this->lowTextBox->Text = Convert::ToString(import.low);
+		this->normalTextBox->Text = Convert::ToString(import.normal);
+		this->highTextBox->Text = Convert::ToString(import.high);
+		this->timeFormat->SelectedIndex = import.time;
+		this->dateFormat->SelectedIndex = import.date;
+
+		if (import.useColors = 1)
+			this->useRange->Checked = false;
+		else
+			this->useRange->Checked = true;
 	}
 
 	private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
@@ -832,6 +869,42 @@ private: System::Void highTextBox_KeyPress(System::Object^  sender, System::Wind
 	{
 		e->Handled = true;
 	}
+}
+private: System::Void setApply_Click(System::Object^  sender, System::EventArgs^  e) {
+	std::ofstream fileWork;
+
+	fileWork.open("settings.dat");
+
+	fileWork << this->densitySetting->SelectedIndex << "\n";
+
+	if (this->lowTextBox->Text == "")
+		fileWork << "-\n";
+	else
+		fileWork << Convert::ToInt32(this->lowTextBox->Text) << "\n";
+	
+	if (this->normalTextBox->Text == "")
+		fileWork << "-\n";
+	else
+		fileWork << Convert::ToInt32(this->normalTextBox->Text) << "\n";
+
+	if (this->highTextBox->Text == "")
+		fileWork << "-\n";
+	else
+		fileWork << Convert::ToInt32(this->highTextBox->Text) << "\n";
+
+	fileWork << this->timeFormat->SelectedIndex << "\n";
+	fileWork << this->dateFormat->SelectedIndex << "\n";
+
+	if (this->useRange->Checked)
+	{
+		fileWork << "1";
+	}
+	else
+	{
+		fileWork << "0";
+	}
+
+	fileWork.close();
 }
 };
 }
