@@ -2,6 +2,8 @@
 #include <ctype.h>
 #include <string>
 #include <msclr\marshal_cppstd.h>
+#include <iostream>
+
 
 struct entryHolder
 {
@@ -17,6 +19,12 @@ struct entryHolder
 	double medU;
 	int medicine;
 	std::string memo;
+};
+
+struct settingsHolder
+{
+	int density, low, normal, high, time, date;
+	bool useColors;
 };
 
 namespace Glucose_QuickLogs {
@@ -87,9 +95,11 @@ namespace Glucose_QuickLogs {
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::GroupBox^  groupBox3;
 	private: System::Windows::Forms::Label^  label6;
-	private: System::Windows::Forms::ComboBox^  comboBox3;
+	private: System::Windows::Forms::ComboBox^  dateFormat;
+
 	private: System::Windows::Forms::Label^  label5;
-	private: System::Windows::Forms::ComboBox^  comboBox2;
+	private: System::Windows::Forms::ComboBox^  timeFormat;
+
 	private: System::Windows::Forms::Label^  label4;
 	private: System::Windows::Forms::TextBox^  highTextBox;
 	private: System::Windows::Forms::Label^  label3;
@@ -97,7 +107,12 @@ namespace Glucose_QuickLogs {
 	private: System::Windows::Forms::TextBox^  lowTextBox;
 	private: System::Windows::Forms::Label^  label2;
 	private: System::Windows::Forms::Label^  label1;
-	private: System::Windows::Forms::ComboBox^  comboBox1;
+	private: System::Windows::Forms::ComboBox^  densitySetting;
+
+	private: System::Windows::Forms::Button^  button2;
+	private: System::Windows::Forms::Label^  label8;
+	private: System::Windows::Forms::Label^  label7;
+	private: System::Windows::Forms::CheckBox^  useRange;
 
 
 	private:
@@ -140,21 +155,25 @@ namespace Glucose_QuickLogs {
 			this->Dose = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Memo = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->tabPage3 = (gcnew System::Windows::Forms::TabPage());
-			this->tabPage4 = (gcnew System::Windows::Forms::TabPage());
-			this->tabPage5 = (gcnew System::Windows::Forms::TabPage());
 			this->groupBox3 = (gcnew System::Windows::Forms::GroupBox());
-			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
-			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->label2 = (gcnew System::Windows::Forms::Label());
-			this->lowTextBox = (gcnew System::Windows::Forms::TextBox());
+			this->button2 = (gcnew System::Windows::Forms::Button());
+			this->label8 = (gcnew System::Windows::Forms::Label());
+			this->label7 = (gcnew System::Windows::Forms::Label());
+			this->useRange = (gcnew System::Windows::Forms::CheckBox());
+			this->label6 = (gcnew System::Windows::Forms::Label());
+			this->dateFormat = (gcnew System::Windows::Forms::ComboBox());
+			this->label5 = (gcnew System::Windows::Forms::Label());
+			this->timeFormat = (gcnew System::Windows::Forms::ComboBox());
+			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->highTextBox = (gcnew System::Windows::Forms::TextBox());
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->normalTextBox = (gcnew System::Windows::Forms::TextBox());
-			this->highTextBox = (gcnew System::Windows::Forms::TextBox());
-			this->label4 = (gcnew System::Windows::Forms::Label());
-			this->comboBox2 = (gcnew System::Windows::Forms::ComboBox());
-			this->label5 = (gcnew System::Windows::Forms::Label());
-			this->comboBox3 = (gcnew System::Windows::Forms::ComboBox());
-			this->label6 = (gcnew System::Windows::Forms::Label());
+			this->lowTextBox = (gcnew System::Windows::Forms::TextBox());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->densitySetting = (gcnew System::Windows::Forms::ComboBox());
+			this->tabPage4 = (gcnew System::Windows::Forms::TabPage());
+			this->tabPage5 = (gcnew System::Windows::Forms::TabPage());
 			this->groupBox1->SuspendLayout();
 			this->groupBox2->SuspendLayout();
 			this->Entry->SuspendLayout();
@@ -420,6 +439,176 @@ namespace Glucose_QuickLogs {
 			this->tabPage3->Text = L"Settings";
 			this->tabPage3->UseVisualStyleBackColor = true;
 			// 
+			// groupBox3
+			// 
+			this->groupBox3->Controls->Add(this->button2);
+			this->groupBox3->Controls->Add(this->label8);
+			this->groupBox3->Controls->Add(this->label7);
+			this->groupBox3->Controls->Add(this->useRange);
+			this->groupBox3->Controls->Add(this->label6);
+			this->groupBox3->Controls->Add(this->dateFormat);
+			this->groupBox3->Controls->Add(this->label5);
+			this->groupBox3->Controls->Add(this->timeFormat);
+			this->groupBox3->Controls->Add(this->label4);
+			this->groupBox3->Controls->Add(this->highTextBox);
+			this->groupBox3->Controls->Add(this->label3);
+			this->groupBox3->Controls->Add(this->normalTextBox);
+			this->groupBox3->Controls->Add(this->lowTextBox);
+			this->groupBox3->Controls->Add(this->label2);
+			this->groupBox3->Controls->Add(this->label1);
+			this->groupBox3->Controls->Add(this->densitySetting);
+			this->groupBox3->Location = System::Drawing::Point(6, 6);
+			this->groupBox3->Name = L"groupBox3";
+			this->groupBox3->Size = System::Drawing::Size(280, 156);
+			this->groupBox3->TabIndex = 0;
+			this->groupBox3->TabStop = false;
+			this->groupBox3->Text = L"Defaults";
+			// 
+			// button2
+			// 
+			this->button2->Location = System::Drawing::Point(9, 127);
+			this->button2->Name = L"button2";
+			this->button2->Size = System::Drawing::Size(263, 23);
+			this->button2->TabIndex = 1;
+			this->button2->Text = L"Apply Settings";
+			this->button2->UseVisualStyleBackColor = true;
+			// 
+			// label8
+			// 
+			this->label8->AutoSize = true;
+			this->label8->Location = System::Drawing::Point(159, 91);
+			this->label8->Name = L"label8";
+			this->label8->Size = System::Drawing::Size(86, 13);
+			this->label8->TabIndex = 13;
+			this->label8->Text = L"to color logbook.";
+			this->label8->Click += gcnew System::EventHandler(this, &MyForm1::label8_Click);
+			// 
+			// label7
+			// 
+			this->label7->AutoSize = true;
+			this->label7->Location = System::Drawing::Point(156, 78);
+			this->label7->Name = L"label7";
+			this->label7->Size = System::Drawing::Size(116, 13);
+			this->label7->TabIndex = 12;
+			this->label7->Text = L"Use designated ranges";
+			// 
+			// useRange
+			// 
+			this->useRange->AutoSize = true;
+			this->useRange->Location = System::Drawing::Point(135, 78);
+			this->useRange->Name = L"useRange";
+			this->useRange->Size = System::Drawing::Size(15, 14);
+			this->useRange->TabIndex = 11;
+			this->useRange->UseVisualStyleBackColor = true;
+			// 
+			// label6
+			// 
+			this->label6->AutoSize = true;
+			this->label6->Location = System::Drawing::Point(132, 49);
+			this->label6->Name = L"label6";
+			this->label6->Size = System::Drawing::Size(68, 13);
+			this->label6->TabIndex = 10;
+			this->label6->Text = L"Date Format:";
+			// 
+			// dateFormat
+			// 
+			this->dateFormat->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			this->dateFormat->FormattingEnabled = true;
+			this->dateFormat->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"M/D/Y", L"D/M/Y" });
+			this->dateFormat->Location = System::Drawing::Point(206, 46);
+			this->dateFormat->Name = L"dateFormat";
+			this->dateFormat->Size = System::Drawing::Size(68, 21);
+			this->dateFormat->TabIndex = 9;
+			// 
+			// label5
+			// 
+			this->label5->AutoSize = true;
+			this->label5->Location = System::Drawing::Point(132, 23);
+			this->label5->Name = L"label5";
+			this->label5->Size = System::Drawing::Size(68, 13);
+			this->label5->TabIndex = 8;
+			this->label5->Text = L"Time Format:";
+			// 
+			// timeFormat
+			// 
+			this->timeFormat->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			this->timeFormat->FormattingEnabled = true;
+			this->timeFormat->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"Standard", L"Military" });
+			this->timeFormat->Location = System::Drawing::Point(206, 19);
+			this->timeFormat->Name = L"timeFormat";
+			this->timeFormat->Size = System::Drawing::Size(68, 21);
+			this->timeFormat->TabIndex = 7;
+			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->Location = System::Drawing::Point(6, 102);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(32, 13);
+			this->label4->TabIndex = 6;
+			this->label4->Text = L"High:";
+			// 
+			// highTextBox
+			// 
+			this->highTextBox->Location = System::Drawing::Point(57, 99);
+			this->highTextBox->Name = L"highTextBox";
+			this->highTextBox->Size = System::Drawing::Size(69, 20);
+			this->highTextBox->TabIndex = 5;
+			this->highTextBox->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm1::highTextBox_KeyPress);
+			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->Location = System::Drawing::Point(6, 75);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(43, 13);
+			this->label3->TabIndex = 1;
+			this->label3->Text = L"Normal:";
+			// 
+			// normalTextBox
+			// 
+			this->normalTextBox->Location = System::Drawing::Point(57, 72);
+			this->normalTextBox->Name = L"normalTextBox";
+			this->normalTextBox->Size = System::Drawing::Size(69, 20);
+			this->normalTextBox->TabIndex = 4;
+			this->normalTextBox->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm1::normalTextBox_KeyPress);
+			// 
+			// lowTextBox
+			// 
+			this->lowTextBox->Location = System::Drawing::Point(57, 46);
+			this->lowTextBox->Name = L"lowTextBox";
+			this->lowTextBox->Size = System::Drawing::Size(69, 20);
+			this->lowTextBox->TabIndex = 3;
+			this->lowTextBox->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm1::lowTextBox_KeyPress);
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(6, 49);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(30, 13);
+			this->label2->TabIndex = 2;
+			this->label2->Text = L"Low:";
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(6, 23);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(45, 13);
+			this->label1->TabIndex = 1;
+			this->label1->Text = L"Density:";
+			// 
+			// densitySetting
+			// 
+			this->densitySetting->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			this->densitySetting->FormattingEnabled = true;
+			this->densitySetting->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"mg\\dl", L"mmol\\L" });
+			this->densitySetting->Location = System::Drawing::Point(57, 19);
+			this->densitySetting->Name = L"densitySetting";
+			this->densitySetting->Size = System::Drawing::Size(69, 21);
+			this->densitySetting->TabIndex = 0;
+			// 
 			// tabPage4
 			// 
 			this->tabPage4->Location = System::Drawing::Point(4, 22);
@@ -440,132 +629,11 @@ namespace Glucose_QuickLogs {
 			this->tabPage5->Text = L"Export";
 			this->tabPage5->UseVisualStyleBackColor = true;
 			// 
-			// groupBox3
-			// 
-			this->groupBox3->Controls->Add(this->label6);
-			this->groupBox3->Controls->Add(this->comboBox3);
-			this->groupBox3->Controls->Add(this->label5);
-			this->groupBox3->Controls->Add(this->comboBox2);
-			this->groupBox3->Controls->Add(this->label4);
-			this->groupBox3->Controls->Add(this->highTextBox);
-			this->groupBox3->Controls->Add(this->label3);
-			this->groupBox3->Controls->Add(this->normalTextBox);
-			this->groupBox3->Controls->Add(this->lowTextBox);
-			this->groupBox3->Controls->Add(this->label2);
-			this->groupBox3->Controls->Add(this->label1);
-			this->groupBox3->Controls->Add(this->comboBox1);
-			this->groupBox3->Location = System::Drawing::Point(6, 6);
-			this->groupBox3->Name = L"groupBox3";
-			this->groupBox3->Size = System::Drawing::Size(280, 129);
-			this->groupBox3->TabIndex = 0;
-			this->groupBox3->TabStop = false;
-			this->groupBox3->Text = L"Defaults";
-			// 
-			// comboBox1
-			// 
-			this->comboBox1->FormattingEnabled = true;
-			this->comboBox1->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"mg\\dl", L"mmol\\L" });
-			this->comboBox1->Location = System::Drawing::Point(57, 19);
-			this->comboBox1->Name = L"comboBox1";
-			this->comboBox1->Size = System::Drawing::Size(69, 21);
-			this->comboBox1->TabIndex = 0;
-			// 
-			// label1
-			// 
-			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(6, 23);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(45, 13);
-			this->label1->TabIndex = 1;
-			this->label1->Text = L"Density:";
-			// 
-			// label2
-			// 
-			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(6, 49);
-			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(30, 13);
-			this->label2->TabIndex = 2;
-			this->label2->Text = L"Low:";
-			// 
-			// lowTextBox
-			// 
-			this->lowTextBox->Location = System::Drawing::Point(57, 46);
-			this->lowTextBox->Name = L"lowTextBox";
-			this->lowTextBox->Size = System::Drawing::Size(69, 20);
-			this->lowTextBox->TabIndex = 3;
-			// 
-			// label3
-			// 
-			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(6, 75);
-			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(43, 13);
-			this->label3->TabIndex = 1;
-			this->label3->Text = L"Normal:";
-			// 
-			// normalTextBox
-			// 
-			this->normalTextBox->Location = System::Drawing::Point(57, 72);
-			this->normalTextBox->Name = L"normalTextBox";
-			this->normalTextBox->Size = System::Drawing::Size(69, 20);
-			this->normalTextBox->TabIndex = 4;
-			// 
-			// highTextBox
-			// 
-			this->highTextBox->Location = System::Drawing::Point(57, 99);
-			this->highTextBox->Name = L"highTextBox";
-			this->highTextBox->Size = System::Drawing::Size(69, 20);
-			this->highTextBox->TabIndex = 5;
-			// 
-			// label4
-			// 
-			this->label4->AutoSize = true;
-			this->label4->Location = System::Drawing::Point(6, 102);
-			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(32, 13);
-			this->label4->TabIndex = 6;
-			this->label4->Text = L"High:";
-			// 
-			// comboBox2
-			// 
-			this->comboBox2->FormattingEnabled = true;
-			this->comboBox2->Location = System::Drawing::Point(206, 19);
-			this->comboBox2->Name = L"comboBox2";
-			this->comboBox2->Size = System::Drawing::Size(68, 21);
-			this->comboBox2->TabIndex = 7;
-			// 
-			// label5
-			// 
-			this->label5->AutoSize = true;
-			this->label5->Location = System::Drawing::Point(132, 23);
-			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(68, 13);
-			this->label5->TabIndex = 8;
-			this->label5->Text = L"Time Format:";
-			// 
-			// comboBox3
-			// 
-			this->comboBox3->FormattingEnabled = true;
-			this->comboBox3->Location = System::Drawing::Point(206, 46);
-			this->comboBox3->Name = L"comboBox3";
-			this->comboBox3->Size = System::Drawing::Size(68, 21);
-			this->comboBox3->TabIndex = 9;
-			// 
-			// label6
-			// 
-			this->label6->AutoSize = true;
-			this->label6->Location = System::Drawing::Point(132, 49);
-			this->label6->Name = L"label6";
-			this->label6->Size = System::Drawing::Size(68, 13);
-			this->label6->TabIndex = 10;
-			this->label6->Text = L"Date Format:";
-			// 
 			// MyForm1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(598, 167);
+			this->ClientSize = System::Drawing::Size(602, 167);
 			this->Controls->Add(this->Entry);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
@@ -592,6 +660,9 @@ namespace Glucose_QuickLogs {
 	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
 		densityPick->SelectedIndex = 0;
 		timeCatPick->SelectedIndex = 0;
+		timeFormat->SelectedIndex = 0;
+		dateFormat->SelectedIndex = 0;
+		densitySetting->SelectedIndex = 0;
 
 	}
 
@@ -666,21 +737,21 @@ private: System::Void Entry_SelectedIndexChanged(System::Object^  sender, System
 	
 	if (holder == 0) // 0 is default
 	{
-		this->ClientSize = System::Drawing::Size(598, 167);
+		this->ClientSize = System::Drawing::Size(602, 167);
 		this->Entry->ClientSize = System::Drawing::Size(585, 152);
 	} 
 	
 	else if (holder == 1) // 1 is the logbook
 	{
-		this->ClientSize = System::Drawing::Size(763, 522);
+		this->ClientSize = System::Drawing::Size(768, 522);
 		this->Entry->ClientSize = System::Drawing::Size(750, 508);
 		this->dataGridView1->ClientSize = System::Drawing::Size(728, 470);
 	}
 
 	else if (holder == 2) //2 is for settings
 	{
-		this->ClientSize = System::Drawing::Size(310, 175);
-		this->Entry->ClientSize = System::Drawing::Size(298,160);
+		this->ClientSize = System::Drawing::Size(316, 211);
+		this->Entry->ClientSize = System::Drawing::Size(298,195);
 	}
 }
 private: System::Void medUText_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
@@ -729,6 +800,38 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 		}
 	}
 
+}
+private: System::Void label8_Click(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void lowTextBox_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
+	if (isdigit(e->KeyChar) || iscntrl(e->KeyChar))
+	{
+		e->Handled = false;
+	}
+	else
+	{
+		e->Handled = true;
+	}
+}
+private: System::Void normalTextBox_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
+	if (isdigit(e->KeyChar) || iscntrl(e->KeyChar))
+	{
+		e->Handled = false;
+	}
+	else
+	{
+		e->Handled = true;
+	}
+}
+private: System::Void highTextBox_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
+	if (isdigit(e->KeyChar) || iscntrl(e->KeyChar))
+	{
+		e->Handled = false;
+	}
+	else
+	{
+		e->Handled = true;
+	}
 }
 };
 }
