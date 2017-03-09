@@ -41,6 +41,7 @@ namespace Glucose_QuickLogs {
 	private: System::Windows::Forms::ProgressBar^  progressBar1;
 	protected:
 	private: System::Windows::Forms::Timer^  timer1;
+	private: System::Windows::Forms::Label^  label1;
 
 	private: System::ComponentModel::IContainer^  components;
 
@@ -61,6 +62,7 @@ namespace Glucose_QuickLogs {
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->progressBar1 = (gcnew System::Windows::Forms::ProgressBar());
 			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
+			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// progressBar1
@@ -77,6 +79,16 @@ namespace Glucose_QuickLogs {
 			this->timer1->Interval = 10;
 			this->timer1->Tick += gcnew System::EventHandler(this, &MyForm::timer1_Tick);
 			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->BackColor = System::Drawing::Color::Transparent;
+			this->label1->Location = System::Drawing::Point(180, 209);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(87, 13);
+			this->label1->TabIndex = 1;
+			this->label1->Text = L"Loading Entry. . .";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -84,6 +96,7 @@ namespace Glucose_QuickLogs {
 			this->BackColor = System::Drawing::SystemColors::MenuText;
 			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"$this.BackgroundImage")));
 			this->ClientSize = System::Drawing::Size(650, 250);
+			this->Controls->Add(this->label1);
 			this->Controls->Add(this->progressBar1);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
@@ -92,11 +105,23 @@ namespace Glucose_QuickLogs {
 			this->Text = L"MyForm";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->ResumeLayout(false);
+			this->PerformLayout();
 
 		}
 #pragma endregion
 	private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e) {
 		this->progressBar1->Increment(1);
+		if (loadingBar >= 0 && loadingBar <= 30)
+			this->label1->Text = "Loading Entry. . .";
+		else if (loadingBar >= 31 && loadingBar <= 60)
+			this->label1->Text = "Loading LogBook. . .";
+		else if (loadingBar >= 61 && loadingBar <= 90)
+			this->label1->Text = "Importing Logbook entries. . .";
+		else if (loadingBar >= 91 && loadingBar <= 120)
+			this->label1->Text = "Applying Settings. . .";
+		else if (loadingBar >= 121 && loadingBar <= 150)
+			this->label1->Text = "Readying Application. . .";
+
 		loadingBar++;
 		if (loadingBar >= 150)
 		{
