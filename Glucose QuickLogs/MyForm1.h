@@ -678,9 +678,9 @@ namespace Glucose_QuickLogs {
 		densitySetting->SelectedIndex = 0;
 
 		std::string temp;
-		std::ifstream importFileWork;
+		std::ifstream importFileWork("settings.dat");
 
-		importFileWork.open("settings.dat");
+		
 
 
 		settingsHolder import;
@@ -688,19 +688,24 @@ namespace Glucose_QuickLogs {
 		// time for some filework!
 		// grabbing density from settings.
 
-		importFileWork >> import.density >> import.low >> import.normal >> import.high >> import.time >> import.date >> import.useColors;
 
-		this->densitySetting->SelectedIndex = import.density;
-		this->lowTextBox->Text = Convert::ToString(import.low);
-		this->normalTextBox->Text = Convert::ToString(import.normal);
-		this->highTextBox->Text = Convert::ToString(import.high);
-		this->timeFormat->SelectedIndex = import.time;
-		this->dateFormat->SelectedIndex = import.date;
+		if (importFileWork.good())
+		{
+			
+			importFileWork >> import.density >> import.low >> import.normal >> import.high >> import.time >> import.date >> import.useColors;
 
-		if (import.useColors = 1)
-			this->useRange->Checked = false;
-		else
-			this->useRange->Checked = true;
+			this->densitySetting->SelectedIndex = import.density;
+			this->lowTextBox->Text = Convert::ToString(import.low);
+			this->normalTextBox->Text = Convert::ToString(import.normal);
+			this->highTextBox->Text = Convert::ToString(import.high);
+			this->timeFormat->SelectedIndex = import.time;
+			this->dateFormat->SelectedIndex = import.date;
+
+			if (import.useColors = 1)
+				this->useRange->Checked = false;
+			else
+				this->useRange->Checked = true;
+		}
 	}
 
 	private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
