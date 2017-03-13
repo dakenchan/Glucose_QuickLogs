@@ -63,10 +63,12 @@ namespace Glucose_QuickLogs {
 				delete components;
 			}
 		}
+
 	private: System::Windows::Forms::GroupBox^  groupBox1;
 	private: System::Windows::Forms::DateTimePicker^  timePick;
 	private: System::Windows::Forms::TextBox^  resultBox;
 	protected:
+
 	private: System::Windows::Forms::DateTimePicker^  datePick;
 	private: System::Windows::Forms::ComboBox^  timeCatPick;
 	private: System::Windows::Forms::ComboBox^  densityPick;
@@ -238,20 +240,24 @@ namespace Glucose_QuickLogs {
 			// 
 			// datePick
 			// 
-			this->datePick->Format = System::Windows::Forms::DateTimePickerFormat::Short;
+			this->datePick->Format = System::Windows::Forms::DateTimePickerFormat::Custom;
 			this->datePick->Location = System::Drawing::Point(7, 20);
 			this->datePick->Name = L"datePick";
 			this->datePick->Size = System::Drawing::Size(100, 20);
 			this->datePick->TabIndex = 1;
+			this->datePick->CustomFormat = L" MM/dd/yyy";
+
 			// 
 			// timePick
 			// 
-			this->timePick->Format = System::Windows::Forms::DateTimePickerFormat::Time;
+			this->timePick->CustomFormat = L" hh:mm:ss tt";
+			this->timePick->Format = System::Windows::Forms::DateTimePickerFormat::Custom;
 			this->timePick->Location = System::Drawing::Point(113, 20);
 			this->timePick->Name = L"timePick";
 			this->timePick->ShowUpDown = true;
 			this->timePick->Size = System::Drawing::Size(92, 20);
 			this->timePick->TabIndex = 0;
+			this->timePick->ValueChanged += gcnew System::EventHandler(this, &MyForm1::timePick_ValueChanged);
 			// 
 			// groupBox2
 			// 
@@ -695,13 +701,24 @@ namespace Glucose_QuickLogs {
 			importFileWork >> import.density >> import.low >> import.normal >> import.high >> import.time >> import.date >> import.useColors;
 
 			this->densitySetting->SelectedIndex = import.density;
+			this->densityPick->SelectedIndex = this->densitySetting->SelectedIndex;
+
 			this->lowTextBox->Text = Convert::ToString(import.low);
 			this->normalTextBox->Text = Convert::ToString(import.normal);
 			this->highTextBox->Text = Convert::ToString(import.high);
 			this->timeFormat->SelectedIndex = import.time;
+
+			if (this->timeFormat->SelectedIndex == 1)
+			{
+				this->timePick->CustomFormat = " HH:mm:ss";
+			}
 			this->dateFormat->SelectedIndex = import.date;
 
-			if (import.useColors = 1)
+			if (this->dateFormat->SelectedIndex == 1)
+			{
+				this->datePick->CustomFormat = "dd/MM/yyy";
+			}
+			if (import.useColors == 1)
 				this->useRange->Checked = false;
 			else
 				this->useRange->Checked = true;
@@ -938,6 +955,8 @@ private: System::Void setApply_Click(System::Object^  sender, System::EventArgs^
 	}
 
 	fileWork.close();
+}
+private: System::Void timePick_ValueChanged(System::Object^  sender, System::EventArgs^  e) {
 }
 };
 }
