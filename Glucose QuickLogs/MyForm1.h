@@ -19,13 +19,30 @@ struct entryHolder
 	int cat;
 	double medU;
 	int medicine;
+	int memoC;
 	std::string memo;
+	std::string timecombined;
 };
 
 struct settingsHolder
 {
 	int density, time, date, low, normal, high;
 	bool useColors;
+};
+
+struct strings
+{
+	std::string breakfast = "breakfast";
+	std::string lunch = "lunch";
+	std::string dinner = "dinner";
+	std::string snack = "snack";
+	std::string bedtime = "bedtime";
+	std::string dens0 = "mg/dl";
+	std::string dens1 = "mmol/L";
+	std::string humalog = "Humalog";
+	std::string novolog = "Novolog";
+	std::string lantus = "Lantus";
+	std::string none = "None";
 };
 
 namespace Glucose_QuickLogs {
@@ -240,13 +257,12 @@ namespace Glucose_QuickLogs {
 			// 
 			// datePick
 			// 
+			this->datePick->CustomFormat = L" MM/dd/yyy";
 			this->datePick->Format = System::Windows::Forms::DateTimePickerFormat::Custom;
 			this->datePick->Location = System::Drawing::Point(7, 20);
 			this->datePick->Name = L"datePick";
 			this->datePick->Size = System::Drawing::Size(100, 20);
 			this->datePick->TabIndex = 1;
-			this->datePick->CustomFormat = L" MM/dd/yyy";
-
 			// 
 			// timePick
 			// 
@@ -309,7 +325,7 @@ namespace Glucose_QuickLogs {
 			this->medPicker->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 			this->medPicker->Enabled = false;
 			this->medPicker->FormattingEnabled = true;
-			this->medPicker->Items->AddRange(gcnew cli::array< System::Object^  >(4) { L"Humalog", L"Novolog", L"Lantus", L"Humalog 70/30" });
+			this->medPicker->Items->AddRange(gcnew cli::array< System::Object^  >(3) { L"Humalog", L"Novolog", L"Lantus" });
 			this->medPicker->Location = System::Drawing::Point(149, 19);
 			this->medPicker->Name = L"medPicker";
 			this->medPicker->Size = System::Drawing::Size(93, 21);
@@ -683,13 +699,18 @@ namespace Glucose_QuickLogs {
 		dateFormat->SelectedIndex = 0;
 		densitySetting->SelectedIndex = 0;
 
-		std::string temp;
+		std::string tempCat;
+		std::string tempDens;
+		std::string tempMed;
+		std::string tempMemo;
 		std::ifstream importFileWork("settings.dat");
-
-		
+		std::ifstream importLogbook("logbook.dat");
+		int counter = -1;
 
 
 		settingsHolder import;
+		entryHolder holder;
+		strings definestrings;
 
 		// time for some filework!
 		// grabbing density from settings.
@@ -723,6 +744,100 @@ namespace Glucose_QuickLogs {
 			else
 				this->useRange->Checked = true;
 		}
+
+		/*now we need to bring the logbook data into the logbook.*/
+		
+		while (importLogbook.good())
+		{
+			//date
+			importLogbook >> holder.month >> holder.day >> holder.year;
+			
+			//time
+			importLogbook >> holder.hour >> holder.minute;
+
+			// morph time based on miltary or am/pm
+			if (this->timeFormat->SelectedIndex == 0)
+			{
+				if (holder.hour > 12)
+				{
+					holder.timecombined = std::to_string(holder.hour-12);
+					holder.timecombined = holder.timecombined + ":";
+					holder.timecombined = holder.timecombined + std::to_string(holder.minute);
+					holder.timecombined = holder.timecombined + " PM";
+				}
+				else
+				{
+					holder.timecombined = std::to_string(holder.hour);
+					holder.timecombined = holder.timecombined + ":";
+					holder.timecombined = holder.timecombined + std::to_string(holder.minute);
+					holder.timecombined = holder.timecombined + " AM";
+				}
+			}
+			if (this->timeFormat->SelectedIndex == 1)
+			{
+				holder.timecombined = std::to_string(holder.hour);
+				holder.timecombined = holder.timecombined + ":";
+				holder.timecombined = holder.timecombined + std::to_string(holder.minute);
+			}
+
+			//category
+			importLogbook >> holder.result >> holder.dens >> holder.cat >> holder.medU >> holder.medicine;
+			getline(importLogbook, holder.memo);
+			getline(importLogbook, holder.memo);
+
+			if (holder.memo == "0")
+				holder.memo = "-";
+
+
+			// check for cat
+			if (holder.cat == 0)
+				tempCat = definestrings.breakfast;
+			else if (holder.cat == 1)
+				tempCat = definestrings.lunch;
+			else if (holder.cat == 2)
+				tempCat = definestrings.dinner;
+			else if (holder.cat == 3)
+				tempCat = definestrings.snack;
+			else
+				tempCat = definestrings.bedtime;
+
+			if (holder.dens == 0)
+				tempDens = definestrings.dens0;
+			else
+				tempDens = definestrings.dens1;
+
+			// medication
+			if (holder.medicine == 0)
+				if (holder.medU == 0) {
+					tempMed = definestrings.none;
+				}
+				else
+					tempMed = definestrings.humalog;
+			else if (holder.medicine == 1)
+				if (holder.medU == 0) {
+					tempMed = definestrings.none;
+				}
+				else
+				tempMed = definestrings.novolog;
+			else
+				if (holder.medU == 0) {
+					tempMed = definestrings.none;
+				}
+				else
+				tempMed = definestrings.lantus;
+			this->dataGridView1->Rows->Add(holder.month + "/" + holder.day + "/" + holder.year, gcnew String(holder.timecombined.c_str()),
+				gcnew String(tempCat.c_str()), holder.result, gcnew String(tempDens.c_str()),
+				gcnew String(tempMed.c_str()), holder.medU, gcnew String(holder.memo.c_str()));
+			counter++;
+			if (holder.result <= Convert::ToInt16(this->lowTextBox->Text))
+				this->dataGridView1->Rows[counter]->DefaultCellStyle->BackColor = Color::PaleTurquoise;
+			else if (holder.result >= Convert::ToInt16(this->highTextBox->Text))
+				this->dataGridView1->Rows[counter]->DefaultCellStyle->BackColor = Color::PaleVioletRed;
+			else
+				this->dataGridView1->Rows[counter]->DefaultCellStyle->BackColor = Color::PaleGreen;
+		}
+		if(counter != -1)
+			this->dataGridView1->Rows->RemoveAt(counter);
 	}
 
 	private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
@@ -849,11 +964,11 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 
 		if (press.hour >= 12)
 		{
-			entry << press.hour - 12 << "\n" << press.minute << "\n" << 1 << "\n";
+			entry << press.hour << "\n" << press.minute << "\n";
 		}
 		else
 		{
-			entry << press.hour << "\n" << press.minute << "\n" << 0 << "\n";
+			entry << press.hour << "\n" << press.minute << "\n";
 		}
 
 		entry << press.result << "\n" << press.dens << "\n" << press.cat << "\n";
@@ -867,7 +982,7 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 		}
 		else
 		{
-			entry << "-\n-\n";
+			entry << "0\n0\n";
 		}
 
 		// if progamming for memo
@@ -876,12 +991,12 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 			String^ memoHolder;
 			memoHolder = gcnew String(memoTextbox->Text);
 			press.memo = msclr::interop::marshal_as<std::string>(memoHolder);
-			entry << press.memo << "\n\n";
+			entry << press.memo << "\n";
 
 		}
 		else
 		{
-			entry << "-\n\n";
+			entry << "0\n";
 		}
 
 		entry.close();
