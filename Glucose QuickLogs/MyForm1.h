@@ -112,6 +112,7 @@ namespace Glucose_QuickLogs {
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Memo;
 	private: bool med = false;
 	private: bool mem = false;
+	private: int counter = -1;
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::GroupBox^  groupBox3;
 	private: System::Windows::Forms::Label^  label6;
@@ -705,7 +706,7 @@ namespace Glucose_QuickLogs {
 		std::string tempMemo;
 		std::ifstream importFileWork("settings.dat");
 		std::ifstream importLogbook("logbook.dat");
-		int counter = -1;
+		/*int counter = -1;*/
 
 
 		settingsHolder import;
@@ -940,6 +941,11 @@ private: System::Void medUText_KeyPress(System::Object^  sender, System::Windows
 }
 private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
 	entryHolder press;
+	strings definestrings;
+	std::string tempCat;
+	std::string tempDens;
+	std::string tempMed;
+
 	press.month = datePick->Value.Month;
 	press.day = datePick->Value.Day;
 	press.year = datePick->Value.Year;
@@ -1000,6 +1006,87 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 		}
 
 		entry.close();
+
+		// now time to add the thing to the logbook!
+
+		// need to combine times!
+
+		if (this->timeFormat->SelectedIndex == 0)
+		{
+			if (press.hour > 12)
+			{
+				press.timecombined = std::to_string(press.hour - 12);
+				press.timecombined = press.timecombined + ":";
+				press.timecombined = press.timecombined + std::to_string(press.minute);
+				press.timecombined = press.timecombined + " PM";
+			}
+			else
+			{
+				press.timecombined = std::to_string(press.hour);
+				press.timecombined = press.timecombined + ":";
+				press.timecombined = press.timecombined + std::to_string(press.minute);
+				press.timecombined = press.timecombined + " AM";
+			}
+		}
+		if (this->timeFormat->SelectedIndex == 1)
+		{
+			press.timecombined = std::to_string(press.hour);
+			press.timecombined = press.timecombined + ":";
+			press.timecombined = press.timecombined + std::to_string(press.minute);
+		}
+
+		if (press.cat == 0)
+			tempCat = definestrings.breakfast;
+		else if (press.cat == 1)
+			tempCat = definestrings.lunch;
+		else if (press.cat == 2)
+			tempCat = definestrings.dinner;
+		else if (press.cat == 3)
+			tempCat = definestrings.snack;
+		else
+			tempCat = definestrings.bedtime;
+
+		if (press.dens == 0)
+			tempDens = definestrings.dens0;
+		else
+			tempDens = definestrings.dens1;
+
+		if (press.medicine == 0)
+			if (press.medU == 0) {
+				tempMed = definestrings.none;
+			}
+			else
+				tempMed = definestrings.humalog;
+		else if (press.medicine == 1)
+			if (press.medU == 0) {
+				tempMed = definestrings.none;
+			}
+			else
+				tempMed = definestrings.novolog;
+		else
+			if (press.medU == 0) {
+				tempMed = definestrings.none;
+			}
+			else
+				tempMed = definestrings.lantus;
+
+		this->dataGridView1->Rows->
+			Add(press.month + "/" + press.day + "/" + press.year, 
+				gcnew String(press.timecombined.c_str()),
+				gcnew String(tempCat.c_str()),
+				press.result, 
+				gcnew String(tempDens.c_str()),
+				gcnew String(tempMed.c_str()),
+				press.medU,
+				gcnew String(press.memo.c_str()));
+
+		if (press.result <= Convert::ToInt16(this->lowTextBox->Text))
+			this->dataGridView1->Rows[counter]->DefaultCellStyle->BackColor = Color::PaleTurquoise;
+		else if (press.result >= Convert::ToInt16(this->highTextBox->Text))
+			this->dataGridView1->Rows[counter]->DefaultCellStyle->BackColor = Color::PaleVioletRed;
+		else
+			this->dataGridView1->Rows[counter]->DefaultCellStyle->BackColor = Color::PaleGreen;
+		counter++;
 	}
 
 }

@@ -110,20 +110,20 @@ namespace Glucose_QuickLogs {
 		}
 #pragma endregion
 	private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e) {
-		this->progressBar1->Increment(1);
-		if (loadingBar >= 0 && loadingBar <= 30)
+		this->progressBar1->Increment(2);
+		if (loadingBar >= 0 && loadingBar <= 15)
 			this->label1->Text = "Loading Entry. . .";
-		else if (loadingBar >= 31 && loadingBar <= 60)
+		else if (loadingBar >= 16 && loadingBar <= 30)
 			this->label1->Text = "Loading LogBook. . .";
-		else if (loadingBar >= 61 && loadingBar <= 90)
+		else if (loadingBar >= 31 && loadingBar <= 45)
 			this->label1->Text = "Importing Logbook entries. . .";
-		else if (loadingBar >= 91 && loadingBar <= 120)
+		else if (loadingBar >= 46 && loadingBar <= 60)
 			this->label1->Text = "Applying Settings. . .";
-		else if (loadingBar >= 121 && loadingBar <= 150)
+		else if (loadingBar >= 61 && loadingBar <= 75)
 			this->label1->Text = "Readying Application. . .";
 
 		loadingBar++;
-		if (loadingBar >= 150)
+		if (loadingBar >= 75)
 		{
 			this->timer1->Stop();
 			MyForm1^ form1 = gcnew MyForm1();
