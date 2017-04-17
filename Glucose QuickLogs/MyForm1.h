@@ -136,6 +136,7 @@ namespace Glucose_QuickLogs {
 	private: System::Windows::Forms::Label^  label7;
 	private: System::Windows::Forms::CheckBox^  useRange;
 	private: System::Windows::Forms::Button^  excelExport;
+	private: System::Windows::Forms::SaveFileDialog^  excelSave;
 
 
 	private:
@@ -197,6 +198,7 @@ namespace Glucose_QuickLogs {
 			this->densitySetting = (gcnew System::Windows::Forms::ComboBox());
 			this->tabPage5 = (gcnew System::Windows::Forms::TabPage());
 			this->excelExport = (gcnew System::Windows::Forms::Button());
+			this->excelSave = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->groupBox1->SuspendLayout();
 			this->groupBox2->SuspendLayout();
 			this->Entry->SuspendLayout();
@@ -665,6 +667,7 @@ namespace Glucose_QuickLogs {
 			this->excelExport->TabIndex = 0;
 			this->excelExport->Text = L"Export current Logbook to Excel (.XLS)";
 			this->excelExport->UseVisualStyleBackColor = true;
+			this->excelExport->Click += gcnew System::EventHandler(this, &MyForm1::excelExport_Click);
 			// 
 			// MyForm1
 			// 
@@ -1167,6 +1170,36 @@ private: System::Void setApply_Click(System::Object^  sender, System::EventArgs^
 	fileWork.close();
 }
 private: System::Void timePick_ValueChanged(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void excelExport_Click(System::Object^  sender, System::EventArgs^  e) {
+	excelSave->InitialDirectory = "C:";
+	excelSave->Title = "Save as Excel (XLS)";
+	excelSave->FileName = "Glucose QuickLogs Export";
+	excelSave->Filter = "Excel Files [2007] (*.XLSX)|*.xlsx";
+
+	if (excelSave->ShowDialog() == System::Windows::Forms::DialogResult::OK)
+	{
+		Microsoft::Office::Interop::Excel::Application^ ExcelApp = gcnew Microsoft::Office::Interop::Excel::ApplicationClass();
+		ExcelApp->Workbooks->Add(Type::Missing);
+
+		for (int x = 1; x < dataGridView1->Columns->Count + 1; x++)
+		{
+			ExcelApp->Cells[1, x] = dataGridView1->Columns[x - 1]->HeaderText;
+		}
+
+		for (int x = 0; x < dataGridView1->Rows->Count; x++)
+		{
+			for (int y = 0; y < dataGridView1->Columns->Count; y++)
+			{
+				ExcelApp->Cells[x + 2, y + 1] = dataGridView1->Rows[x]->Cells[y]->Value;
+			}
+		}
+
+		ExcelApp->ActiveWorkbook->SaveCopyAs(excelSave->FileName->ToString());
+		ExcelApp->ActiveWorkbook->Saved = true;
+		ExcelApp->Quit();
+		MessageBox::Show("File Export Complete.");
+	}
 }
 };
 }
