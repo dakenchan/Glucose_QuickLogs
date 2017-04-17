@@ -99,7 +99,7 @@ namespace Glucose_QuickLogs {
 	private: System::Windows::Forms::TabPage^  tabPage1;
 	private: System::Windows::Forms::TabPage^  tabPage2;
 	private: System::Windows::Forms::TabPage^  tabPage3;
-	private: System::Windows::Forms::TabPage^  tabPage4;
+
 	private: System::Windows::Forms::TabPage^  tabPage5;
 	private: System::Windows::Forms::DataGridView^  dataGridView1;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Date;
@@ -135,6 +135,7 @@ namespace Glucose_QuickLogs {
 	private: System::Windows::Forms::Label^  label8;
 	private: System::Windows::Forms::Label^  label7;
 	private: System::Windows::Forms::CheckBox^  useRange;
+	private: System::Windows::Forms::Button^  excelExport;
 
 
 	private:
@@ -194,8 +195,8 @@ namespace Glucose_QuickLogs {
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->densitySetting = (gcnew System::Windows::Forms::ComboBox());
-			this->tabPage4 = (gcnew System::Windows::Forms::TabPage());
 			this->tabPage5 = (gcnew System::Windows::Forms::TabPage());
+			this->excelExport = (gcnew System::Windows::Forms::Button());
 			this->groupBox1->SuspendLayout();
 			this->groupBox2->SuspendLayout();
 			this->Entry->SuspendLayout();
@@ -204,6 +205,7 @@ namespace Glucose_QuickLogs {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			this->tabPage3->SuspendLayout();
 			this->groupBox3->SuspendLayout();
+			this->tabPage5->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// groupBox1
@@ -348,7 +350,6 @@ namespace Glucose_QuickLogs {
 			this->Entry->Controls->Add(this->tabPage1);
 			this->Entry->Controls->Add(this->tabPage2);
 			this->Entry->Controls->Add(this->tabPage3);
-			this->Entry->Controls->Add(this->tabPage4);
 			this->Entry->Controls->Add(this->tabPage5);
 			this->Entry->Location = System::Drawing::Point(12, 12);
 			this->Entry->Name = L"Entry";
@@ -645,25 +646,25 @@ namespace Glucose_QuickLogs {
 			this->densitySetting->Size = System::Drawing::Size(69, 21);
 			this->densitySetting->TabIndex = 0;
 			// 
-			// tabPage4
-			// 
-			this->tabPage4->Location = System::Drawing::Point(4, 22);
-			this->tabPage4->Name = L"tabPage4";
-			this->tabPage4->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage4->Size = System::Drawing::Size(577, 126);
-			this->tabPage4->TabIndex = 3;
-			this->tabPage4->Text = L"Import";
-			this->tabPage4->UseVisualStyleBackColor = true;
-			// 
 			// tabPage5
 			// 
+			this->tabPage5->Controls->Add(this->excelExport);
 			this->tabPage5->Location = System::Drawing::Point(4, 22);
 			this->tabPage5->Name = L"tabPage5";
 			this->tabPage5->Padding = System::Windows::Forms::Padding(3);
 			this->tabPage5->Size = System::Drawing::Size(577, 126);
 			this->tabPage5->TabIndex = 4;
-			this->tabPage5->Text = L"Export";
+			this->tabPage5->Text = L"Export to Excel";
 			this->tabPage5->UseVisualStyleBackColor = true;
+			// 
+			// excelExport
+			// 
+			this->excelExport->Location = System::Drawing::Point(7, 7);
+			this->excelExport->Name = L"excelExport";
+			this->excelExport->Size = System::Drawing::Size(224, 87);
+			this->excelExport->TabIndex = 0;
+			this->excelExport->Text = L"Export current Logbook to Excel (.XLS)";
+			this->excelExport->UseVisualStyleBackColor = true;
 			// 
 			// MyForm1
 			// 
@@ -689,6 +690,7 @@ namespace Glucose_QuickLogs {
 			this->tabPage3->ResumeLayout(false);
 			this->groupBox3->ResumeLayout(false);
 			this->groupBox3->PerformLayout();
+			this->tabPage5->ResumeLayout(false);
 			this->ResumeLayout(false);
 
 		}
@@ -928,6 +930,12 @@ private: System::Void Entry_SelectedIndexChanged(System::Object^  sender, System
 		this->ClientSize = System::Drawing::Size(316, 211);
 		this->Entry->ClientSize = System::Drawing::Size(298,195);
 	}
+	else if (holder == 3) // Export
+	{
+		this->ClientSize = System::Drawing::Size(265, 140);
+		this->Entry->ClientSize = System::Drawing::Size(247, 125);
+	}
+
 }
 private: System::Void medUText_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
 	if (isdigit(e->KeyChar) || iscntrl(e->KeyChar))
